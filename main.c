@@ -13,34 +13,27 @@ float saltos_media[30];
 int total_alunos = 0;
 int atual;
 
-/* Compara dois nomes letra por letra, comecando na posicao p. Devolve 1 se sao iguais e 0 se nao. */
-int nome_igual(char a[], char b[], int p){
-	if (a[p] == b[p]) {
+/* Compara dois nomes letra por letra. Devolve 1 se sao iguais e 0 se nao. */
+int nome_igual(char a[], char b[]){
+	int p = 0;
+	while (a[p] == b[p]) {
 		if (a[p] == 0) {
 			return 1;
 		}
-		else {
-			return nome_igual(a, b, p + 1);
-		}
+		p++;
 	}
-	else {
-		return 0;
-	}
+	return 0;
 }
 
-/* Procura o nome a partir do aluno i. Devolve a posicao do aluno ou -1 se nao achar. */
-int buscar_aluno(char nome[], int i){
-	if (i == total_alunos) {
-		return -1;
-	}
-	else {
-		if (nome_igual(nomes[i], nome, 0) == 1) {
+/* Procura o nome entre os alunos cadastrados. Devolve a posicao do aluno ou -1 se nao achar. */
+int buscar_aluno(char nome[]){
+	int i;
+	for (i = 0; i < total_alunos; i++) {
+		if (nome_igual(nomes[i], nome) == 1) {
 			return i;
 		}
-		else {
-			return buscar_aluno(nome, i + 1);
-		}
 	}
+	return -1;
 }
 
 /* Pede o nome do aluno e guarda a posicao dele em "atual". Se for um nome novo, cadastra. */
@@ -53,7 +46,7 @@ void selecionar_aluno(){
 		printf("Informe o nome do aluno: ");
 		scanf("%12s", &nomes[total_alunos]);
 
-		atual = buscar_aluno(nomes[total_alunos], 0);
+		atual = buscar_aluno(nomes[total_alunos]);
 		if (atual == -1) {
 			atual = total_alunos;
 			saltos_cm[atual] = -1;
@@ -73,7 +66,7 @@ void consulta(){
 	printf("\nInforme o nome do aluno: ");
 	scanf("%12s", &nome);
 
-	i = buscar_aluno(nome, 0);
+	i = buscar_aluno(nome);
 	if (i == -1) {
 		printf("\nAluno nao encontrado.\n");
 	}
@@ -151,68 +144,56 @@ void cordenacao(){
 
 void menu (){
 
-	int testes, a[2];
-	char aluno[13];
+	int testes;
 
-	printf("\nTESTES DISPONIVEIS     OU      COLSUTA DE DADOS.");
-	printf("\n1 - forca");
-	printf("\n2 - resistencia");
-	printf("\n3 - velocidade");
-	printf("\n4 - cordenacao");
-	printf("\n5 - consulta");
-	printf("\n0 - sair");
+	do {
+		printf("\nTESTES DISPONIVEIS     OU      COLSUTA DE DADOS.");
+		printf("\n1 - forca");
+		printf("\n2 - resistencia");
+		printf("\n3 - velocidade");
+		printf("\n4 - cordenacao");
+		printf("\n5 - consulta");
+		printf("\n0 - sair");
 
-	printf("\nQual teste quer analisar?\n");
-	testes = 0;
-	scanf("%d", &testes);
+		printf("\nQual teste quer analisar?\n");
+		testes = 0;
+		scanf("%d", &testes);
 
-	switch(testes){
-		case 1:{
-				selecionar_aluno();
-				if (atual == -1) {
-				}
-				else {
-					forca();
-				}
-				menu();
-			break;
+		switch(testes){
+			case 1:{
+					selecionar_aluno();
+					if (atual != -1) {
+						forca();
+					}
+				break;
+			}
+			case 2:{
+					selecionar_aluno();
+					if (atual != -1) {
+						resistencia();
+					}
+				break;
+			}
+			case 3:{
+					selecionar_aluno();
+					if (atual != -1) {
+						velocidade();
+					}
+				break;
+			}
+			case 4:{
+					selecionar_aluno();
+					if (atual != -1) {
+						cordenacao();
+					}
+				break;
+			}
+			case 5:{
+					consulta();
+				break;
+			}
 		}
-		case 2:{
-				selecionar_aluno();
-				if (atual == -1) {
-				}
-				else {
-					resistencia();
-				}
-				menu();
-			break;
-		}
-		case 3:{
-				selecionar_aluno();
-				if (atual == -1) {
-				}
-				else {
-					velocidade();
-				}
-				menu();
-			break;
-		}
-		case 4:{
-				selecionar_aluno();
-				if (atual == -1) {
-				}
-				else {
-					cordenacao();
-				}
-				menu();
-			break;
-		}
-		case 5:{
-				consulta();
-				menu();
-			break;
-		}
-	}
+	} while (testes != 0);
 }
 
 int main(int argc, char *argv[]) {
