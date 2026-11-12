@@ -130,6 +130,44 @@ void selecionar_aluno(){
 	}
 }
 
+/* Mostra na tela todos os resultados do aluno da posicao i, com a classificacao de cada um. */
+void mostrar_aluno(int i){
+	printf("\nALUNO: %s   TURMA: %s", nomes[i], turma);
+
+	if (saltos_cm[i] == -1) {
+		printf("\nSalto horizontal: nao realizado");
+	}
+	else {
+		printf("\nSalto horizontal: %d cm - ", saltos_cm[i]);
+		media_salto(saltos_cm[i]);
+	}
+
+	if (corrida20[i] == -1) {
+		printf("\nCorrida de 20m: nao realizado");
+	}
+	else {
+		printf("\nCorrida de 20m: %f s - ", corrida20[i]);
+		media_corrida20(corrida20[i]);
+	}
+
+	if (corrida6[i] == -1) {
+		printf("\nCorrida de 6 minutos: nao realizado");
+	}
+	else {
+		printf("\nCorrida de 6 minutos: %d m - ", corrida6[i]);
+		media_corrida6(corrida6[i]);
+	}
+
+	if (quadrado[i] == -1) {
+		printf("\nTeste do quadrado: nao realizado");
+	}
+	else {
+		printf("\nTeste do quadrado: %f s - ", quadrado[i]);
+		media_quadrado(quadrado[i]);
+	}
+	printf("\n");
+}
+
 void consulta(){
 	char nome[13];
 	int i;
@@ -143,40 +181,23 @@ void consulta(){
 		printf("\nAluno nao encontrado.\n");
 	}
 	else {
-		printf("\nALUNO: %s   TURMA: %s", nomes[i], turma);
+		mostrar_aluno(i);
+	}
+}
 
-		if (saltos_cm[i] == -1) {
-			printf("\nSalto horizontal: nao realizado");
-		}
-		else {
-			printf("\nSalto horizontal: %d cm - ", saltos_cm[i]);
-			media_salto(saltos_cm[i]);
-		}
+/* Resumo geral: mostra todos os alunos cadastrados, um por um. */
+void resumo(){
+	int i;
 
-		if (corrida20[i] == -1) {
-			printf("\nCorrida de 20m: nao realizado");
+	printf("\nRESUMO GERAL DA TURMA %s", turma);
+	if (total_alunos == 0) {
+		printf("\nNenhum aluno cadastrado.\n");
+	}
+	else {
+		printf("\nTotal de alunos cadastrados: %d\n", total_alunos);
+		for (i = 0; i < total_alunos; i++) {
+			mostrar_aluno(i);
 		}
-		else {
-			printf("\nCorrida de 20m: %f s - ", corrida20[i]);
-			media_corrida20(corrida20[i]);
-		}
-
-		if (corrida6[i] == -1) {
-			printf("\nCorrida de 6 minutos: nao realizado");
-		}
-		else {
-			printf("\nCorrida de 6 minutos: %d m - ", corrida6[i]);
-			media_corrida6(corrida6[i]);
-		}
-
-		if (quadrado[i] == -1) {
-			printf("\nTeste do quadrado: nao realizado");
-		}
-		else {
-			printf("\nTeste do quadrado: %f s - ", quadrado[i]);
-			media_quadrado(quadrado[i]);
-		}
-		printf("\n");
 	}
 }
 
@@ -230,6 +251,61 @@ void cordenacao(){
 }
 
 
+/* Atualizar: pede o nome de um aluno ja cadastrado e qual teste dele vai ser refeito. */
+void atualizar(){
+	char nome[13];
+	int i, opcao;
+
+	printf("\nATUALIZAR DADOS DE ALUNO");
+	printf("\nInforme o nome do aluno: ");
+	scanf("%12s", &nome);
+
+	i = buscar_aluno(nome);
+	if (i == -1) {
+		printf("\nAluno nao encontrado.\n");
+	}
+	else {
+		printf("\nDADOS ATUAIS:");
+		mostrar_aluno(i);
+
+		printf("\nQual dado quer atualizar?");
+		printf("\n1 - forca");
+		printf("\n2 - resistencia");
+		printf("\n3 - velocidade");
+		printf("\n4 - cordenacao");
+		printf("\n0 - cancelar\n");
+		opcao = 0;
+		scanf("%d", &opcao);
+
+		atual = i;
+		switch(opcao){
+			case 1:{
+					forca();
+				break;
+			}
+			case 2:{
+					resistencia();
+				break;
+			}
+			case 3:{
+					velocidade();
+				break;
+			}
+			case 4:{
+					cordenacao();
+				break;
+			}
+		}
+		if (opcao >= 1 && opcao <= 4) {
+			printf("\nDados atualizados.\n");
+		}
+		else {
+			printf("\nNada foi alterado.\n");
+		}
+	}
+}
+
+
 void menu (){
 
 	int testes;
@@ -241,6 +317,8 @@ void menu (){
 		printf("\n3 - velocidade");
 		printf("\n4 - cordenacao");
 		printf("\n5 - consulta");
+		printf("\n6 - resumo geral");
+		printf("\n7 - atualizar dados de um aluno");
 		printf("\n0 - sair");
 
 		printf("\nQual teste quer analisar?\n");
@@ -278,6 +356,14 @@ void menu (){
 			}
 			case 5:{
 					consulta();
+				break;
+			}
+			case 6:{
+					resumo();
+				break;
+			}
+			case 7:{
+					atualizar();
 				break;
 			}
 		}
