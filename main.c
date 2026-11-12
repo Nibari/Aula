@@ -9,9 +9,14 @@ char nomes[30][13];
 int saltos_cm[30];
 float corrida20[30];
 int corrida6[30];
-float saltos_media[30];
+float quadrado[30];
 int total_alunos = 0;
 int atual;
+
+/* Turma escolhida (exemplo: 3a, 5b) e a faixa dela nos parametros do PROESP-Br:
+   faixa 1 = 1o ao 6o ano, faixa 2 = 7o ao 9o ano. */
+char turma[4];
+int faixa;
 
 /* Compara dois nomes letra por letra. Devolve 1 se sao iguais e 0 se nao. */
 int nome_igual(char a[], char b[]){
@@ -36,6 +41,73 @@ int buscar_aluno(char nome[]){
 	return -1;
 }
 
+/* Para testes em que quanto MAIOR o valor, melhor (salto e corrida de 6 minutos). */
+void media_maior(float valor, float minimo, float maximo){
+	if (valor < minimo) {
+		printf("ABAIXO DA MEDIA");
+	}
+	else {
+		if (valor > maximo) {
+			printf("ACIMA DA MEDIA");
+		}
+		else {
+			printf("NA MEDIA");
+		}
+	}
+}
+
+/* Para testes em que quanto MENOR o valor, melhor (tempo da corrida de 20m e do quadrado). */
+void media_menor(float valor, float minimo, float maximo){
+	if (valor > maximo) {
+		printf("ABAIXO DA MEDIA");
+	}
+	else {
+		if (valor < minimo) {
+			printf("ACIMA DA MEDIA");
+		}
+		else {
+			printf("NA MEDIA");
+		}
+	}
+}
+
+/* Cada funcao abaixo escolhe os parametros conforme a faixa da turma. */
+void media_salto(int cm){
+	if (faixa == 1) {
+		media_maior(cm, 113, 124);
+	}
+	else {
+		media_maior(cm, 142, 155);
+	}
+}
+
+void media_corrida20(float sec){
+	if (faixa == 1) {
+		media_menor(sec, 4.37, 4.67);
+	}
+	else {
+		media_menor(sec, 3.85, 4.10);
+	}
+}
+
+void media_corrida6(int m){
+	if (faixa == 1) {
+		media_maior(m, 747, 840);
+	}
+	else {
+		media_maior(m, 823, 924);
+	}
+}
+
+void media_quadrado(float sec){
+	if (faixa == 1) {
+		media_menor(sec, 7.33, 7.80);
+	}
+	else {
+		media_menor(sec, 6.47, 6.89);
+	}
+}
+
 /* Pede o nome do aluno e guarda a posicao dele em "atual". Se for um nome novo, cadastra. */
 void selecionar_aluno(){
 	if (total_alunos == 30) {
@@ -52,7 +124,7 @@ void selecionar_aluno(){
 			saltos_cm[atual] = -1;
 			corrida20[atual] = -1;
 			corrida6[atual] = -1;
-			saltos_media[atual] = -1;
+			quadrado[atual] = -1;
 			total_alunos = total_alunos + 1;
 		}
 	}
@@ -71,34 +143,38 @@ void consulta(){
 		printf("\nAluno nao encontrado.\n");
 	}
 	else {
-		printf("\nALUNO: %s", nomes[i]);
+		printf("\nALUNO: %s   TURMA: %s", nomes[i], turma);
 
 		if (saltos_cm[i] == -1) {
 			printf("\nSalto horizontal: nao realizado");
 		}
 		else {
-			printf("\nSalto horizontal: %d cm", saltos_cm[i]);
+			printf("\nSalto horizontal: %d cm - ", saltos_cm[i]);
+			media_salto(saltos_cm[i]);
 		}
 
 		if (corrida20[i] == -1) {
 			printf("\nCorrida de 20m: nao realizado");
 		}
 		else {
-			printf("\nCorrida de 20m: %f s", corrida20[i]);
+			printf("\nCorrida de 20m: %f s - ", corrida20[i]);
+			media_corrida20(corrida20[i]);
 		}
 
 		if (corrida6[i] == -1) {
 			printf("\nCorrida de 6 minutos: nao realizado");
 		}
 		else {
-			printf("\nCorrida de 6 minutos: %d m", corrida6[i]);
+			printf("\nCorrida de 6 minutos: %d m - ", corrida6[i]);
+			media_corrida6(corrida6[i]);
 		}
 
-		if (saltos_media[i] == -1) {
-			printf("\nSaltos laterais: nao realizado");
+		if (quadrado[i] == -1) {
+			printf("\nTeste do quadrado: nao realizado");
 		}
 		else {
-			printf("\nSaltos laterais (media): %f", saltos_media[i]);
+			printf("\nTeste do quadrado: %f s - ", quadrado[i]);
+			media_quadrado(quadrado[i]);
 		}
 		printf("\n");
 	}
@@ -111,6 +187,8 @@ void forca(){
 	scanf("%d",&cm);
 	printf("\n%d",&cm);
 	saltos_cm[atual] = cm;
+	printf("\nResultado: ");
+	media_salto(cm);
 }
 void resistencia(){
 	float sec;
@@ -119,6 +197,8 @@ void resistencia(){
 	scanf("%f",&sec);
 	printf("%f",&sec);
 	corrida20[atual] = sec;
+	printf("\nResultado: ");
+	media_corrida20(sec);
 }
 void velocidade(){
 	int m;
@@ -127,18 +207,26 @@ void velocidade(){
 	scanf("%d", &m);
 	printf("%d",&m);
 	corrida6[atual] = m;
+	printf("\nResultado: ");
+	media_corrida6(m);
 }
 void cordenacao(){
-	int salto1,salto2;
-	float salto_media;
-	printf("\nSALTOS LATERAIS \n O aluno salta de um lado para o outro de uma linha ou ripa do chao, saltando com os pes juntos durantes 15 segundos. \n Sera contado o numero de falas, cada aluno tera 2 tentativas e sera inserido a quantidade de saltos das 2 tentativas");
-	printf("\nInsira a quantidade de saltos (1 tentativa): ");
-	scanf("%d",&salto1);
-	printf("\nInsira a quantidade de saltos (2 tentativa): ");
-	scanf("%d",&salto2);
-	salto_media = (salto1 + salto2)/2;
-	printf("%f",&salto_media);
-	saltos_media[atual] = salto_media;
+	float tempo1,tempo2,melhor;
+	printf("\nCOORDENACAO: TESTE DO QUADRADO 4x4m \n O aluno percorre correndo um quadrado de 4 metros de lado marcado com 4 cones, tocando em cada cone, o mais rapido possivel. \n Sera registrado o tempo em segundos(contando 2 casas apos a virgula), cada aluno tera 2 tentativas e vale o menor tempo.");
+	printf("\nInsira o tempo em segundos (1 tentativa): ");
+	scanf("%f",&tempo1);
+	printf("\nInsira o tempo em segundos (2 tentativa): ");
+	scanf("%f",&tempo2);
+	if (tempo1 < tempo2) {
+		melhor = tempo1;
+	}
+	else {
+		melhor = tempo2;
+	}
+	quadrado[atual] = melhor;
+	printf("\nMelhor tempo: %f s", melhor);
+	printf("\nResultado: ");
+	media_quadrado(melhor);
 }
 
 
@@ -198,7 +286,7 @@ void menu (){
 
 int main(int argc, char *argv[]) {
 
-	char pro[20], turma[4];
+	char pro[20];
 	int senha;
 
 	printf("PROFESSOR: ");
@@ -209,8 +297,33 @@ int main(int argc, char *argv[]) {
 
 	if (senha == 12211) {
 	    printf("ACESSO AUTORIZADO, BEM VINDO PROFESSOR %s", pro);
-	    printf("\nSelecione a turma para a analise: ");
-	    scanf("%3s", &turma);
+
+	    /* O primeiro caractere da turma e o ano: 1 a 6 usa uma faixa, 7 a 9 usa a outra. */
+	    faixa = 0;
+	    while (faixa == 0) {
+	        printf("\nSelecione a turma para a analise (exemplo: 3a, 5b): ");
+	        turma[0] = 0;
+	        if (scanf("%3s", &turma) != 1) {
+	            return 0;
+	        }
+	        if (turma[0] >= '1' && turma[0] <= '6') {
+	            faixa = 1;
+	        }
+	        else {
+	            if (turma[0] >= '7' && turma[0] <= '9') {
+	                faixa = 2;
+	            }
+	            else {
+	                printf("Turma invalida, comece pelo ano de 1 a 9.");
+	            }
+	        }
+	    }
+	    if (faixa == 1) {
+	        printf("Turma %s: parametros do 1 ao 6 ano.", turma);
+	    }
+	    else {
+	        printf("Turma %s: parametros do 7 ao 9 ano.", turma);
+	    }
 	    menu();
 	}
 	else {
