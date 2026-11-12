@@ -11,10 +11,6 @@ int atual;
 
 char turma[4];
 int faixa;
-int ano;
-
-int saltos_min[10] = {0, 32, 40, 47, 54, 59, 64, 68, 70, 72};
-int saltos_max[10] = {0, 45, 55, 63, 70, 74, 79, 83, 88, 88};
 
 int nome_igual(char a[], char b[]){
 	int p = 0;
@@ -93,7 +89,12 @@ void media_corrida6(int m){
 }
 
 void media_saltos(int total){
-	media_maior(total, saltos_min[ano], saltos_max[ano]);
+	if (faixa == 1) {
+		media_maior(total, 49, 64);
+	}
+	else {
+		media_maior(total, 70, 86);
+	}
 }
 
 void forca(){
@@ -396,8 +397,6 @@ int main(int argc, char *argv[]) {
 				}
 			}
 		}
-
-		ano = turma[0] - '0';
 
 		if (faixa == 1) {
 			printf("Turma %s: parametros do 1 ao 6 ano.", turma);
