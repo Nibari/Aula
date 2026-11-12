@@ -5,7 +5,7 @@ char nomes[30][13];
 int saltos_cm[30];
 float corrida20[30];
 int corrida6[30];
-float quadrado[30];
+int saltos_laterais[30];
 int total_alunos = 0;
 int atual;
 
@@ -88,15 +88,6 @@ void media_corrida6(int m){
 	}
 }
 
-void media_quadrado(float sec){
-	if (faixa == 1) {
-		media_menor(sec, 7.33, 7.80);
-	}
-	else {
-		media_menor(sec, 6.47, 6.89);
-	}
-}
-
 void forca(){
 	int cm;
 
@@ -140,26 +131,20 @@ void resistencia(){
 }
 
 void coordenacao(){
-	float tempo1, tempo2, melhor;
+	int salto1, salto2, total;
 
-	printf("\nCOORDENACAO: TESTE DO QUADRADO 4x4m");
-	printf("\n O aluno percorre correndo um quadrado de 4 metros de lado marcado com 4 cones, tocando em cada cone, o mais rapido possivel.");
-	printf("\n Sera registrado o tempo em segundos (contando 2 casas apos a virgula). Cada aluno tera 2 tentativas e vale o menor tempo.");
-	printf("\n\nInsira o tempo em segundos (1 tentativa): ");
-	scanf("%f", &tempo1);
-	printf("Insira o tempo em segundos (2 tentativa): ");
-	scanf("%f", &tempo2);
+	printf("\nCOORDENACAO: SALTOS LATERAIS");
+	printf("\n O aluno salta de um lado para o outro de uma linha ou ripa no chao, com os pes juntos, durante 15 segundos.");
+	printf("\n Sera contado o numero de saltos. Cada aluno tera 2 tentativas e o resultado e a soma das duas.");
+	printf("\n\nInsira a quantidade de saltos (1 tentativa): ");
+	scanf("%d", &salto1);
+	printf("Insira a quantidade de saltos (2 tentativa): ");
+	scanf("%d", &salto2);
 
-	if (tempo1 < tempo2) {
-		melhor = tempo1;
-	}
-	else {
-		melhor = tempo2;
-	}
+	total = salto1 + salto2;
 
-	quadrado[atual] = melhor;
-	printf("\nResultado: %f s - ", melhor);
-	media_quadrado(melhor);
+	saltos_laterais[atual] = total;
+	printf("\nResultado: %d saltos (soma das 2 tentativas)", total);
 }
 
 void selecionar_aluno(){
@@ -177,7 +162,7 @@ void selecionar_aluno(){
 			saltos_cm[atual] = -1;
 			corrida20[atual] = -1;
 			corrida6[atual] = -1;
-			quadrado[atual] = -1;
+			saltos_laterais[atual] = -1;
 			total_alunos = total_alunos + 1;
 		}
 	}
@@ -210,12 +195,11 @@ void mostrar_aluno(int i){
 		media_corrida6(corrida6[i]);
 	}
 
-	if (quadrado[i] == -1) {
-		printf("\nTeste do quadrado: nao realizado");
+	if (saltos_laterais[i] == -1) {
+		printf("\nSaltos laterais: nao realizado");
 	}
 	else {
-		printf("\nTeste do quadrado: %f s - ", quadrado[i]);
-		media_quadrado(quadrado[i]);
+		printf("\nSaltos laterais: %d saltos", saltos_laterais[i]);
 	}
 	printf("\n");
 }
